@@ -10,7 +10,7 @@
 
 var EXAM = new Date(2026, 9, 15, 9, 0, 0);       // Phase 1, Thursday 15 October 2026
 var PH2 = new Date(2026, 10, 20, 9, 0, 0);       // Phase 2, Friday 20 November 2026
-var VER = "d179dbf61a";
+var VER = "4c2cb4155b";
 var BRAND = "PFRDA Compass";
 
 /* ── helpers ── */
