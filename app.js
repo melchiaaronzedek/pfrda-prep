@@ -10,7 +10,7 @@
 
 var EXAM = new Date(2026, 9, 15, 9, 0, 0);       // Phase 1, Thursday 15 October 2026
 var PH2 = new Date(2026, 10, 20, 9, 0, 0);       // Phase 2, Friday 20 November 2026
-var VER = "f1a9413019";
+var VER = "aa148e70f9";
 var BRAND = "PFRDA Compass";
 
 /* ── helpers ── */
@@ -565,6 +565,7 @@ V[""] = function () {
     '</div><figure class="hero-g reveal">' + rings(ring) + ringLegend(ring) + '</figure></section>' +
     (D.lastday ? '<a class="ld-band reveal" href="#/lastday"><span class="ld-k">' + (d <= 1 ? 'Read tonight' : 'Final revision') + '</span><b>The last-day sheet</b><span class="d">Every subject on one page: the facts PFRDA keeps asking, the formulas, the traps.</span></a>' : '') +
     nextHTML +
+    '<a class="ld-band reveal ex-band" href="#/exam"><span class="ld-k">The exam</span><b>Pattern and syllabus</b><span class="d">Both phases, every paper, the marking, how selection works and the full syllabus on one page.</span></a>' +
     '<div class="stats reveal">' +
       '<div class="stat"><div class="k">Last mock</div><div class="v">' + (last ? fmtM(last.s.marks) + '<small> / ' + fmtM(last.s.max) + '</small>' : '—') + '</div><div class="s">' + (last ? h(last.p.label) : 'none yet') + '</div></div>' +
       '<div class="stat"><div class="k">Accuracy</div><div class="v">' + (t.acc == null ? '—' : t.acc + '%') + '</div><div class="s">' + (t.done ? t.right + ' right of ' + t.done : 'nothing answered yet') + '</div></div>' +
@@ -860,6 +861,78 @@ V["mockreview"] = function (pid, practice) {
   return host;
 };
 
+/* ── exam pattern and syllabus: everything from the official notice on one page ── */
+function tbl(cols, rows, cls) {
+  return '<div class="nb nb-tab' + (cls ? ' ' + cls : '') + '"><div class="nt-scroll"><table><thead><tr>' + cols.map(function (c) { return '<th>' + c + '</th>'; }).join("") + '</tr></thead><tbody>' +
+    rows.map(function (r) { return '<tr>' + r.map(function (c, i) { return i ? '<td>' + c + '</td>' : '<th scope="row">' + c + '</th>'; }).join("") + '</tr>'; }).join("") + '</tbody></table></div></div>';
+}
+V["exam"] = function () {
+  var P1 = secsOf(1), P2 = secsOf(2), C = D.counts || [];
+  var p2papers = C.filter(function (c) { return c.kind === "P2"; });
+  function avg(k) { var n = 0, t = 0; p2papers.forEach(function (c) { t += c.n[k] || 0; n++; }); return n ? t / n : 0; }
+  function chips(x) { return '<div class="ex-chips">' + x.topics.map(function (t) { return '<a href="' + learnHref(x.k, t.n) + '">' + h(t.n) + '</a>'; }).join("") + '</div>'; }
+  var NEW26 = { MK: 1, MD: 1, AI: 1 };
+  return '<section class="head"><span class="kicker reveal">PFRDA Officer Grade A (Assistant Manager) 2026 · General stream</span>' +
+      '<h1 class="page-h reveal">Exam pattern and syllabus.</h1>' +
+      '<p class="lede reveal">Everything from the official notice on one page: the three phases, every paper, the marking, how you are selected, and the full syllabus with a link to the notes for each topic.</p>' +
+      '<div class="ld-nav reveal">' + [["ex-dates", "Dates"], ["ex-sel", "Selection"], ["ex-p1", "Phase 1"], ["ex-p2", "Phase 2"], ["ex-rules", "Marking rules"], ["ex-syl2", "Paper 2 syllabus"], ["ex-syl1", "Paper 1 syllabus"], ["ex-desc", "Descriptive English"], ["ex-post", "Posts and pay"]].map(function (x) { return '<a href="#' + x[0] + '" data-jump="' + x[0] + '">' + x[1] + '</a>'; }).join("") + '<button class="btn quiet sm" data-print>Print</button></div></section>' +
+
+    '<section class="band" id="ex-dates"><h2 class="sec-h reveal">Dates</h2>' + tbl(["Stage", "Date"], [
+      ["Applications and fee", "3 to 24 September 2026"], ["<b>Phase 1</b> online exam", "<b>Thursday 15 October 2026</b>"], ["Phase 2 online exam", "Friday 20 November 2026"],
+      ["Phase 3 interview", "Told by e-mail and SMS to those who clear Phase 2"], ["Call letters", "On pfrda.org.in; watch your e-mail"]]) + '</section>' +
+
+    '<section class="band" id="ex-sel"><h2 class="sec-h reveal">How you are selected</h2>' +
+      '<div class="stats reveal" style="margin-top:18px"><div class="stat"><div class="k">Phase 1</div><div class="v">Screening</div><div class="s">2 papers × 100 marks. Only shortlists for Phase 2; the marks are not counted later.</div></div>' +
+        '<div class="stat"><div class="k">Phase 2</div><div class="v">85%</div><div class="s">2 papers × 100 marks, weighted 1/3 and 2/3. This is the score that matters.</div></div>' +
+        '<div class="stat"><div class="k">Phase 3</div><div class="v">15%</div><div class="s">Interview, in Hindi or English. 5 candidates called per vacancy, by Phase 2 merit.</div></div>' +
+        '<div class="stat"><div class="k">Final merit</div><div class="v">85 : 15</div><div class="s">Phase 2 marks and interview marks together.</div></div></div></section>' +
+
+    '<section class="band" id="ex-p1"><h2 class="sec-h reveal">Phase 1 · 15 October 2026</h2>' +
+      tbl(["Paper", "Section", "Questions", "Marks", "Time"], [
+        ["Paper 1", P1[0].name, "20", "25", '<b>60 min</b> for the whole paper'], ["", P1[1].name, "20", "25", ""], ["", P1[2].name, "30", "25", ""], ["", "General Awareness (with financial sector questions)", "20", "25", ""],
+        ["", "<b>Total</b>", "<b>90</b>", "<b>100</b>", ""],
+        ["Paper 2", "General stream: Commerce, Accountancy, Management, Finance, Costing, Companies Act, Economics, Pension Sector, PFRDA Act, Budget and Economic Survey, AI and ML, Media, Marketing and Communication", "<b>50</b>", "<b>100</b>", "<b>40 min</b>"]]) +
+      tbl(["Per question", "Right", "Wrong", "Blank"], [["Paper 1: English, Quant, GA", "+1.25", "−0.3125", "0"], ["Paper 1: Reasoning", "+0.833", "−0.208", "0"], ["Paper 2", "+2", "−0.5", "0"]]) +
+      '<p class="muted reveal" style="margin-top:10px">Both papers are multiple choice with five options. A wrong answer loses a quarter of that question\'s marks. Questions are in Hindi and English, except English Language.</p></section>' +
+
+    '<section class="band" id="ex-p2"><h2 class="sec-h reveal">Phase 2 · 20 November 2026</h2>' +
+      tbl(["Paper", "Subject", "Questions", "Marks", "Time", "Weight"], [
+        ["Paper 1", "English, descriptive: tests drafting skills (précis, essay, comprehension)", "3", "100", "60 min", "1/3"],
+        ["Paper 2", "General stream subjects, multiple choice (same syllabus as Phase 1 Paper 2)", "50", "100", "40 min", "2/3"]]) +
+      '<p class="muted reveal" style="margin-top:10px">Negative marking of 1/4 applies to Paper 2. Paper 1 (descriptive) is evaluated only for candidates who reach the qualifying marks in Paper 2.</p></section>' +
+
+    '<section class="band" id="ex-rules"><h2 class="sec-h reveal">Marking and cut-off rules</h2><div class="note reveal" style="margin-top:16px"><ul class="pts">' +
+      ['A separate cut-off in <b>each paper</b> and an aggregate cut-off, in Phase 1 and again in Phase 2. A weak paper alone can stop you.', 'The aggregate cut-off is set by PFRDA according to the number of vacancies.',
+       'Phase 1 marks only shortlist; they are not added to the final score.', 'A quarter of the marks is lost for each wrong answer in both Phase 1 papers and in Phase 2 Paper 2; a blank costs nothing.',
+       'Phase 2 Paper 1 (descriptive) is marked only if you reach the qualifying mark in Phase 2 Paper 2.', 'Candidates equal to 5 times the vacancies are called for the interview, in order of Phase 2 merit.',
+       'Final selection: Phase 2 marks weighted 85% and interview marks 15%.', 'You may apply for at most 2 streams; a separate Paper 2 is held for each.'].map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ul></div></section>' +
+
+    '<section class="band" id="ex-syl2"><h2 class="sec-h reveal">Paper 2 syllabus, General stream</h2>' +
+      '<p class="muted reveal" style="margin-top:10px">Official wording, then the topics in our notes (tap one to open it). The count is the average number of questions per Paper 2 across the six recalled papers of 2021, 2022 and 2025.</p>' +
+      P2.map(function (x) { var a = avg(x.k);
+        return '<div class="note ex-syl reveal t-' + x.tone + '"><div class="ex-sh"><h3>' + h(x.name) + '</h3><span class="tag' + (NEW26[x.k] ? ' key' : '') + '">' + (NEW26[x.k] ? 'New in 2026' : a ? 'About ' + (Math.round(a * 10) / 10) + ' a paper' : 'Rarely asked directly') + '</span></div>' +
+          (x.official ? '<p class="ex-off">' + h(x.official) + '</p>' : '') + chips(x) + '<a class="ex-go" href="#/practice/' + x.k + '">Practise ' + secQs(x.k).length + ' questions' + arr() + '</a></div>'; }).join("") +
+      (p2papers.length ? '<h3 class="reveal" style="margin-top:26px">Questions per subject in the recalled Paper 2s</h3>' +
+        tbl(["Subject"].concat(p2papers.map(function (c) { return h(c.label.replace(" · ", "<br>")); })), ["FN", "PS", "CO", "CL", "CA", "EC", "MG"].map(function (k) {
+          return [h(secOf(k).short)].concat(p2papers.map(function (c) { return String(c.n[k] || 0); })); }), "ex-cnt") +
+        '<p class="muted reveal" style="margin-top:8px">Memory-based papers recall 46 to 50 of the 50 questions. PFRDA Act, Budget, AI, Media and Marketing have no recalled questions of their own yet: the first two show up inside Finance and Pension questions, and the last three are new in the 2026 syllabus.</p>' : '') + '</section>' +
+
+    '<section class="band" id="ex-syl1"><h2 class="sec-h reveal">Paper 1 syllabus</h2>' +
+      '<p class="muted reveal" style="margin-top:10px">The notice names the four sections only. These are the question types PFRDA set in 2022 and 2025, the ones our notes cover.</p>' +
+      P1.map(function (x) { return '<div class="note ex-syl reveal t-' + x.tone + '"><div class="ex-sh"><h3>' + h(x.name) + '</h3><span class="tag">' + x.n + ' questions · ' + x.marks + ' marks</span></div>' + chips(x) +
+        '<a class="ex-go" href="#/practice/' + x.k + '">Practise ' + secQs(x.k).length + ' questions' + arr() + '</a></div>'; }).join("") + '</section>' +
+
+    '<section class="band" id="ex-desc"><h2 class="sec-h reveal">Phase 2 Paper 1: descriptive English</h2><div class="note reveal" style="margin-top:16px"><ul class="pts">' +
+      '<li>Official syllabus: writing skills, including expression and understanding of the topic; précis writing, essay writing and comprehension.</li><li>3 questions, 100 marks, 60 minutes; typed online. Past papers set an essay (about 250 words, choice of topics), a précis (140 to 160 words with a title) and a comprehension or letter.</li>' +
+      '<li>It is worth 1/3 of Phase 2, so about 28% of your final merit.</li></ul>' +
+      '<a class="ex-go" href="#/mocks">Past descriptive questions are under Mocks' + arr() + '</a></div></section>' +
+
+    '<section class="band" id="ex-post"><h2 class="sec-h reveal">Posts, eligibility and pay</h2>' +
+      tbl(["", "General stream"], [["Vacancies", "25: UR 9, OBC 7, SC 4, EWS 3, ST 2 (PwBD 2 within these)"], ["Qualification", "Master's degree or 2-year PG diploma in any discipline, or a Bachelor's in Law or Engineering, or ACA/FCA, ACS/FCS, ACMA/FCMA, or CFA"],
+        ["Age", "Not over 30 as on 31 July 2026 (SC/ST +5, OBC NCL +3, PwBD +10)"], ["Pay", "Rs 62,500 to 1,26,100; gross about Rs 2,05,000 a month at the start"], ["Probation", "2 years"], ["Posting", "New Delhi or Mumbai, liable anywhere in India"]]) +
+      '<p class="muted reveal" style="margin-top:10px">Source: PFRDA recruitment notice for Officer Grade A (Assistant Manager) 2026. Check your call letter for the reporting time and centre.</p></section>' + foot();
+};
+
 /* ── last-day sheet ── */
 V["lastday"] = function () {
   var L = D.lastday; if (!L) return blank("The last-day sheet is being written.");
@@ -886,7 +959,7 @@ V["progress"] = function () {
 
 /* ── more ── */
 V["more"] = function () {
-  var L = [["#/plan", "The 5-day plan", "Day by day to 15 October"], ["#/lastday", "Last-day sheet", "Every subject on one page"], ["#/errors", "Error log", (errList().length || "No") + " questions to clear"],
+  var L = [["#/exam", "Exam pattern and syllabus", "Every paper, the marking, selection and the full syllabus"], ["#/plan", "The 5-day plan", "Day by day to 15 October"], ["#/lastday", "Last-day sheet", "Every subject on one page"], ["#/errors", "Error log", (errList().length || "No") + " questions to clear"],
     ["#/practice/pyq", "Every past PFRDA question", "2021, 2022 and 2025, with reasons"], ["#/progress", "Progress", "Mock scores and accuracy by subject"], ["#/sources", "Sources", "Where the notes and facts come from"]];
   return '<section class="head"><h1 class="page-h reveal">More.</h1></section><div class="list reveal">' + L.map(function (x) {
     return '<a class="item" href="' + x[0] + '" style="grid-template-columns:minmax(0,1fr) auto;align-items:center"><span><span class="t">' + h(x[1]) + '</span><span class="d">' + h(x[2]) + '</span></span><span class="end">' + arr() + '</span></a>';
@@ -929,7 +1002,7 @@ function route() {
   else if (p[0] === "errors") { key = "errors"; args = [p[1] === "run"]; }
   else if (V[p[0]]) key = p[0];
   else key = "404";
-  var TITLES = { "": "Home", plan: "The 5-day plan", learn: "Learn", practice: "Practice", errors: "Error log", mocks: "Mocks", mock: "Mock", mockrun: "Mock in progress", mockresult: "Mock result", mockreview: "Mock review", mockpaper: "Question paper with answers", lastday: "Last-day sheet", progress: "Progress", more: "More", sources: "Sources" };
+  var TITLES = { "": "Home", plan: "The 5-day plan", learn: "Learn", practice: "Practice", errors: "Error log", mocks: "Mocks", mock: "Mock", mockrun: "Mock in progress", mockresult: "Mock result", mockreview: "Mock review", mockpaper: "Question paper with answers", exam: "Exam pattern and syllabus", lastday: "Last-day sheet", progress: "Progress", more: "More", sources: "Sources" };
   document.title = (TITLES[key] ? TITLES[key] + " · " : "") + BRAND;
   var out;
   try { out = V[key] ? V[key].apply(null, args) : blank(); } catch (err) { console.error(err); out = blank("Something went wrong drawing this page."); }

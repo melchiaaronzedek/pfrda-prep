@@ -6,3 +6,14 @@
 .task a{color:inherit;text-decoration:underline;text-decoration-color:var(--rule);text-underline-offset:3px}
 .task small{display:block;margin-top:2px}
 .ex-secs span[data-sec]{cursor:pointer}
+.ex-syl{margin-top:14px}
+.ex-sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ex-sh h3{margin:0}
+.ex-off{margin:8px 0 0;color:var(--ink-2);font-size:14.5px;line-height:1.5}
+.ex-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.ex-chips a{text-decoration:none;color:var(--ink);background:var(--surface-2,rgba(127,127,127,.12));border-radius:999px;padding:5px 11px;font-size:13.5px;font-weight:600}
+.ex-chips a:hover{color:var(--accent)}
+.ex-go{display:inline-flex;align-items:center;gap:4px;margin-top:12px;font-size:14px;font-weight:600;color:var(--accent);text-decoration:none}
+.ex-cnt td{text-align:center}
+.ex-band{margin-top:16px}
+@media print{.rail,.bar,.top,.ld-nav{display:none!important}}
