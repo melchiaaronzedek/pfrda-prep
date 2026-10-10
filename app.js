@@ -10,7 +10,7 @@
 
 var EXAM = new Date(2026, 9, 15, 9, 0, 0);       // Phase 1, Thursday 15 October 2026
 var PH2 = new Date(2026, 10, 20, 9, 0, 0);       // Phase 2, Friday 20 November 2026
-var VER = "aa148e70f9";
+var VER = "862bc285f6";
 var BRAND = "PFRDA Compass";
 
 /* ── helpers ── */
@@ -387,6 +387,7 @@ function nb(b) {
     case "formula": out = '<div class="fxg">' + (b.items || []).map(function (f) { return '<div class="fxc"><code>' + h(f.f) + '</code>' + (f.note ? '<span>' + h(f.note) + '</span>' : '') + '</div>'; }).join("") + '</div>'; break;
     case "fig": return '<figure class="nb nb-fig">' + (b.title ? '<h4 class="nb-t">' + h(b.title) + '</h4>' : '') + '<div class="fig-s">' + svgSafe(b.svg) + '</div>' + (b.cap ? '<figcaption>' + hx(b.cap).t + '</figcaption>' : '') + '</figure>';
     case "solve": return solveHTML(b);
+    case "text": return '<div class="nb nb-text' + (b.imp ? ' imp' : '') + '">' + t + (b.paras || []).map(function (x) { var r = hx(x); return '<p' + (r.hot ? ' class="hot"' : '') + '>' + r.t + '</p>'; }).join("") + '</div>';
     default: return "";
   }
   var cls = { points: "nb-pts", table: "nb-tab", timeline: "nb-tl", pairs: "nb-pairs", compare: "nb-cmp", chain: "nb-chain", flow: "nb-flow", formula: "nb-fx" }[b.type];

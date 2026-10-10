@@ -17,3 +17,6 @@
 .ex-cnt td{text-align:center}
 .ex-band{margin-top:16px}
 @media print{.rail,.bar,.top,.ld-nav{display:none!important}}
+.nb-text p{margin:0 0 .75em;line-height:1.65;font-size:calc(16px*var(--rs,1))}
+.nb-text p:last-child{margin-bottom:0}
+.nb-text p.hot{background:linear-gradient(transparent 60%,rgba(255,214,10,.18) 0)}
