@@ -20,3 +20,4 @@
 .nb-text p{margin:0 0 .75em;line-height:1.65;font-size:calc(16px*var(--rs,1))}
 .nb-text p:last-child{margin-bottom:0}
 .nb-text p.hot{background:linear-gradient(transparent 60%,rgba(255,214,10,.18) 0)}
+.fig-s .ln2{fill:none;stroke:var(--ink-3);stroke-width:1.2;stroke-linecap:round}
